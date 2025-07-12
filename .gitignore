@@ -1,0 +1,8 @@
+# Virtual Environment
+prs
+
+# django project
+manage.py
+static
+migrations
+media
