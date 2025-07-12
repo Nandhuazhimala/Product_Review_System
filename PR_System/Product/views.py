@@ -1,8 +1,8 @@
-from rest_framework import viewsets
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .models import *
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer,RegisterSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
 
@@ -59,3 +59,14 @@ def delete_product(request, id):
     
     product_obj.delete()
     return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+# User Register section 
+
+class RegisterView(APIView):
+    def post(self, request):
+        user_data = request.data
+        serializer = RegisterSerializer(data=user_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
