@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from .models import *
 from .serializers import ProductSerializer,RegisterSerializer,LoginSerializer
 from rest_framework.permissions import IsAdminUser
-from rest_framework import status
+from rest_framework import status, permissions
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 
@@ -100,3 +100,16 @@ class LoginView(APIView):
             'username': user.username,
             'is_admin': user.is_staff
         }, status=status.HTTP_200_OK)
+    
+# Logout Section
+
+@permission_classes([])
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        if user.is_authenticated:
+            user.auth_token.delete()
+            return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+        return Response({"error": "User not authenticated"}, status=status.HTTP_404_NOT_FOUND)

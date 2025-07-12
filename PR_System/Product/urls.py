@@ -8,4 +8,5 @@ urlpatterns = [
     path('product/delete/<int:id>/', delete_product, name='Delete_Product'),
     path('register/', RegisterView.as_view(), name='Register'),
     path('login/', LoginView.as_view(), name='Login'),
+    path('logout/', LogoutView.as_view(), name='Logout'),
 ]
