@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
 
+
 # Create for product serializers
 
 
@@ -25,5 +26,17 @@ class RegisterSerializer(serializers.Serializer):
             email = validated_data['email'],
             password = validated_data['password'],
         )
+    
+# create login section
+
+class LoginSerializer(serializers.Serializer):
+
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+
+
+
 
 

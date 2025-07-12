@@ -2,9 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .models import *
-from .serializers import ProductSerializer,RegisterSerializer
+from .serializers import ProductSerializer,RegisterSerializer,LoginSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework import status
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+
+
 
 # Create your views here.
 
@@ -12,7 +16,7 @@ from rest_framework import status
 
 
 @api_view(['GET'])
-
+@permission_classes([])
 def product_list(request):
     product_obj = Products.objects.all()
     serializer_data = ProductSerializer(product_obj, many=True)
@@ -61,7 +65,7 @@ def delete_product(request, id):
     return Response({'message': 'Product deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 # User Register section 
-
+@permission_classes([])
 class RegisterView(APIView):
     def post(self, request):
         user_data = request.data
@@ -70,3 +74,29 @@ class RegisterView(APIView):
             serializer.save()
             return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# Login Section
+@permission_classes([])
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+
+        user = authenticate(username=username, password=password)
+
+        if not user:
+            return Response({'message': 'Invalid credentials'}, status=status.HTTP_404_NOT_FOUND)
+
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response({
+            'message': 'Login successful',
+            'token': str(token),
+            'username': user.username,
+            'is_admin': user.is_staff
+        }, status=status.HTTP_200_OK)
