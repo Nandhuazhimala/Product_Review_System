@@ -35,7 +35,14 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
 
+# Review Section
 
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only = True)
+
+    class Meta:
+        model = Review
+        fields = "__all__"
 
 
 
