@@ -38,11 +38,12 @@ class LoginSerializer(serializers.Serializer):
 # Review Section
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only = True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Review
-        fields = "__all__"
+        fields = ['id', 'user', 'product', 'rating', 'review', 'created_at']
 
 
 
